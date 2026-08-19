@@ -12,6 +12,16 @@
     <meta property="og:description" content="Your trusted destination for bicycles, accessories, and cycling essentials in Begusarai.">
     <meta property="og:type" content="website">
     
+    <!-- Theme Detection Script (Anti-FOUC) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initialTheme = savedTheme ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', initialTheme);
+        })();
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,6 +33,7 @@
     <style>
         :root {
             --bg-body: #f8f9fa;
+            --bg-section-alt: #f1f3f5;
             --bg-card: #ffffff;
             --text-dark: #1e1e1e;
             --text-light: #6c757d;
@@ -37,7 +48,26 @@
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            --input-bg: #fdfdfd;
+            --input-color: #1e1e1e;
+            --nav-bg: rgba(18, 18, 18, 0.95);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #0b0f19;
+            --bg-section-alt: #111827;
+            --bg-card: #1f293d;
+            --text-dark: #f3f4f6;
+            --text-light: #9ca3af;
+            --charcoal: #f9fafb;
+            --border-color: #2d3748;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.4);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.7);
+            --input-bg: #111827;
+            --input-color: #f3f4f6;
+            --nav-bg: rgba(11, 15, 25, 0.96);
         }
 
         * {
@@ -159,9 +189,9 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(18, 18, 18, 0.95);
+            background: var(--nav-bg);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
             transition: var(--transition);
         }
 
@@ -247,6 +277,36 @@
             border: none;
             color: white;
             font-size: 1.5rem;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+            transform: rotate(15deg) scale(1.08);
+        }
+
+        [data-theme="dark"] .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fbbf24;
         }
 
         /* Hero Section */
@@ -444,7 +504,7 @@
         /* Featured Cycles Section */
         .products-section {
             padding: 80px 0;
-            background-color: #f1f3f5;
+            background-color: var(--bg-section-alt);
         }
 
         .product-grid {
@@ -472,7 +532,7 @@
         .product-image {
             position: relative;
             height: 240px;
-            background: #ffffff;
+            background: var(--bg-card);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -569,12 +629,13 @@
 
         .btn-outline-dark {
             background: transparent;
-            border: 1px solid var(--charcoal);
-            color: var(--charcoal);
+            border: 1px solid var(--text-dark);
+            color: var(--text-dark);
         }
 
         .btn-outline-dark:hover {
-            background: var(--charcoal);
+            background: var(--primary);
+            border-color: var(--primary);
             color: white;
         }
 
@@ -647,7 +708,7 @@
         /* Services Section */
         .services-section {
             padding: 80px 0;
-            background: var(--charcoal);
+            background: #0f172a;
             color: white;
         }
 
@@ -746,7 +807,7 @@
         /* About Section */
         .about-section {
             padding: 80px 0;
-            background-color: #f1f3f5;
+            background-color: var(--bg-section-alt);
         }
 
         .about-grid {
@@ -778,8 +839,8 @@
             position: absolute;
             bottom: -30px;
             right: -30px;
-            background: var(--charcoal);
-            color: white;
+            background: var(--bg-card);
+            color: var(--text-dark);
             padding: 30px;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-lg);
@@ -900,7 +961,7 @@
         }
 
         .review-text {
-            color: #4b5563;
+            color: var(--text-light);
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 20px;
@@ -935,7 +996,7 @@
         /* Gallery Section */
         .gallery-section {
             padding: 80px 0;
-            background-color: #f1f3f5;
+            background-color: var(--bg-section-alt);
         }
 
         .gallery-grid {
@@ -1135,7 +1196,7 @@
         /* Contact Section */
         .contact-section {
             padding: 80px 0;
-            background: #f1f3f5;
+            background: var(--bg-section-alt);
         }
 
         .contact-container {
@@ -1190,7 +1251,8 @@
             border-radius: var(--radius-sm);
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            background: #fdfdfd;
+            background: var(--input-bg);
+            color: var(--input-color);
             transition: var(--transition);
         }
 
@@ -1198,7 +1260,7 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.15);
-            background: white;
+            background: var(--input-bg);
         }
 
         textarea.form-control {
@@ -1358,7 +1420,7 @@
                 left: -100%;
                 width: 100%;
                 height: calc(100vh - 80px);
-                background: var(--charcoal);
+                background: #0f172a;
                 flex-direction: column;
                 justify-content: center;
                 gap: 24px;
@@ -1402,6 +1464,9 @@
                 <a href="tel:09570853565" class="nav-btn btn-call"><i class="fa-solid fa-phone"></i> Call Now</a>
                 <a href="https://wa.me/919570853565?text=Hello%20National%20Cycle%20Store%202.0,%20I%20want%20to%20enquire%20about%20bicycles." target="_blank" class="nav-btn btn-wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
             </div>
+            <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle light and dark mode" title="Toggle Light/Dark Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
             <button class="hamburger" id="hamburgerBtn" aria-label="Toggle Menu">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -2219,6 +2284,35 @@
             setTimeout(() => {
                 document.getElementById('successMsg').style.display = 'none';
             }, 6000);
+        }
+
+        // Theme Toggle Functionality
+        const themeToggleBtn = document.getElementById('themeToggle');
+        function updateThemeIcon(theme) {
+            if (themeToggleBtn) {
+                const icon = themeToggleBtn.querySelector('i');
+                if (icon) {
+                    if (theme === 'dark') {
+                        icon.className = 'fa-solid fa-sun';
+                    } else {
+                        icon.className = 'fa-solid fa-moon';
+                    }
+                }
+            }
+        }
+
+        // Sync icon on load based on current attribute set by head script
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateThemeIcon(currentTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
         }
     </script>
 </body>
