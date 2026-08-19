@@ -15,10 +15,17 @@
     <!-- Theme Detection Script (Anti-FOUC) -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const initialTheme = savedTheme ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-theme', initialTheme);
+            function getPreferredTheme() {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    return savedTheme;
+                }
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    return 'light';
+                }
+                return 'dark';
+            }
+            document.documentElement.setAttribute('data-theme', getPreferredTheme());
         })();
     </script>
 
@@ -31,10 +38,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        :root {
+        :root, [data-theme="dark"] {
+            --bg-body: #0b0f19;
+            --bg-section-alt: #111827;
+            --bg-card: #1f293d;
+            --product-img-bg: #151c28;
+            --text-dark: #f3f4f6;
+            --text-light: #9ca3af;
+            --primary: #ff5722;
+            --primary-hover: #f4511e;
+            --accent-blue: #0284c7;
+            --charcoal: #f9fafb;
+            --border-color: #2d3748;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.4);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.7);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            --input-bg: #111827;
+            --input-color: #f3f4f6;
+            --nav-bg: rgba(11, 15, 25, 0.96);
+            --nav-link-color: #d1d5db;
+            --logo-color: #ffffff;
+            --call-btn-bg: rgba(255, 255, 255, 0.1);
+            --call-btn-color: #ffffff;
+            --call-btn-border: rgba(255, 255, 255, 0.2);
+            --footer-bg: #0b0f19;
+        }
+
+        [data-theme="light"] {
             --bg-body: #f8f9fa;
             --bg-section-alt: #f1f3f5;
             --bg-card: #ffffff;
+            --product-img-bg: #ffffff;
             --text-dark: #1e1e1e;
             --text-light: #6c757d;
             --primary: #ff5722;
@@ -45,29 +83,15 @@
             --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
             --shadow-md: 0 10px 25px rgba(0,0,0,0.08);
             --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 20px;
-            --transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             --input-bg: #fdfdfd;
             --input-color: #1e1e1e;
-            --nav-bg: rgba(18, 18, 18, 0.95);
-        }
-
-        [data-theme="dark"] {
-            --bg-body: #0b0f19;
-            --bg-section-alt: #111827;
-            --bg-card: #1f293d;
-            --text-dark: #f3f4f6;
-            --text-light: #9ca3af;
-            --charcoal: #f9fafb;
-            --border-color: #2d3748;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.4);
-            --shadow-md: 0 10px 25px rgba(0,0,0,0.5);
-            --shadow-lg: 0 20px 40px rgba(0,0,0,0.7);
-            --input-bg: #111827;
-            --input-color: #f3f4f6;
-            --nav-bg: rgba(11, 15, 25, 0.96);
+            --nav-bg: rgba(255, 255, 255, 0.96);
+            --nav-link-color: #374151;
+            --logo-color: #1e1e1e;
+            --call-btn-bg: rgba(30, 30, 30, 0.08);
+            --call-btn-color: #1e1e1e;
+            --call-btn-border: rgba(0, 0, 0, 0.15);
+            --footer-bg: #111827;
         }
 
         * {
@@ -206,10 +230,11 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            color: white;
+            color: var(--logo-color);
             font-family: 'Outfit', sans-serif;
             font-size: 1.35rem;
             font-weight: 700;
+            transition: var(--transition);
         }
 
         .logo i {
@@ -224,7 +249,7 @@
         }
 
         .nav-link {
-            color: #d1d5db;
+            color: var(--nav-link-color);
             font-weight: 500;
             font-size: 0.95rem;
             transition: var(--transition);
@@ -251,14 +276,16 @@
         }
 
         .btn-call {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--call-btn-bg);
+            color: var(--call-btn-color);
+            border: 1px solid var(--call-btn-border);
+            transition: var(--transition);
         }
 
         .btn-call:hover {
             background: var(--primary);
             border-color: var(--primary);
+            color: white;
         }
 
         .btn-wa {
@@ -275,22 +302,23 @@
             cursor: pointer;
             background: none;
             border: none;
-            color: white;
+            color: var(--logo-color);
             font-size: 1.5rem;
+            transition: var(--transition);
         }
 
         /* Theme Toggle Button */
         .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: var(--call-btn-bg);
+            border: 1px solid var(--call-btn-border);
+            color: #fbbf24;
             width: 42px;
             height: 42px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             cursor: pointer;
             transition: var(--transition);
             margin-left: 10px;
@@ -301,12 +329,15 @@
             background: var(--primary);
             border-color: var(--primary);
             color: #ffffff;
-            transform: rotate(15deg) scale(1.08);
+            transform: rotate(20deg) scale(1.1);
         }
 
-        [data-theme="dark"] .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fbbf24;
+        [data-theme="light"] .theme-toggle-btn {
+            color: #4b5563;
+        }
+
+        [data-theme="light"] .theme-toggle-btn:hover {
+            color: #ffffff;
         }
 
         /* Hero Section */
@@ -2288,30 +2319,38 @@
 
         // Theme Toggle Functionality
         const themeToggleBtn = document.getElementById('themeToggle');
+
         function updateThemeIcon(theme) {
             if (themeToggleBtn) {
                 const icon = themeToggleBtn.querySelector('i');
                 if (icon) {
                     if (theme === 'dark') {
                         icon.className = 'fa-solid fa-sun';
+                        themeToggleBtn.setAttribute('title', 'Switch to Light Theme');
+                        themeToggleBtn.setAttribute('aria-label', 'Switch to Light Theme');
                     } else {
                         icon.className = 'fa-solid fa-moon';
+                        themeToggleBtn.setAttribute('title', 'Switch to Dark Theme');
+                        themeToggleBtn.setAttribute('aria-label', 'Switch to Dark Theme');
                     }
                 }
             }
         }
 
+        function getActiveTheme() {
+            return document.documentElement.getAttribute('data-theme') || 'dark';
+        }
+
         // Sync icon on load based on current attribute set by head script
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        updateThemeIcon(currentTheme);
+        updateThemeIcon(getActiveTheme());
 
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', () => {
-                const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
-                const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
+                const currentTheme = getActiveTheme();
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', nextTheme);
+                localStorage.setItem('theme', nextTheme);
+                updateThemeIcon(nextTheme);
             });
         }
     </script>
